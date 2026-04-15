@@ -1,0 +1,490 @@
+#include <stdio.h>
+#include <string.h>
+#define TAM_ALUNOS 3
+#define TAM_PROFESSORES 3
+#define TAM_MATRICULA 12
+#define TAM_CPF 13
+
+//estruturas
+typedef struct al{
+    char matricula_AL[TAM_MATRICULA];
+    char sexo_AL;
+    char cpf_AL[TAM_CPF];
+    char nome_AL[50];
+    int nascimento_AL[3];
+    int ativo_AL;
+}Aluno;
+
+typedef struct prof{
+    char matricula_PROF[TAM_MATRICULA];
+    char sexo_PROF;
+    char cpf_PROF[TAM_CPF];
+    char nome_PROF[50];
+    int nascimento_PROF[3];
+    int ativo_PROF;
+}Professor;
+
+//funÃ§Ãµes
+//funÃ§Ã£o de validaÃ§Ã£o de cpf aluno
+int cpf_existeAL(Aluno lista[], int total, char cpf[]){ 
+    for(int icont = 0; icont < total; icont++){
+        if(strcmp(lista[icont].cpf_AL, cpf) == 0)
+            return 1;
+    }
+    return 0;
+}
+
+//funÃ§Ã£o de validaÃ§Ã£o de matricula aluno
+int matricula_existeAL(Aluno lista[], int total, char matricula[]){
+    for(int icont = 0; icont < total; icont++){
+        if(strcmp(lista[icont].matricula_AL, matricula) == 0)
+            return 1;
+    }
+    return 0;
+}
+
+//funÃ§Ã£o de validaÃ§Ã£o de cpf professor
+int cpf_existePROF(Professor lista[], int total, char cpf[]){ 
+    for(int icont = 0; icont < total; icont++){
+        if(strcmp(lista[icont].cpf_PROF, cpf) == 0)
+            return 1;
+    }
+    return 0;
+}
+
+//funÃ§Ã£o de validaÃ§Ã£o de matricula professor
+int matricula_existePROF(Professor lista[], int total, char matricula[]){
+    for(int icont = 0; icont < total; icont++){
+        if(strcmp(lista[icont].matricula_PROF, matricula) == 0)
+            return 1;
+    }
+    return 0;
+}
+
+int main(){
+
+    //alunos
+    int cadastro_aluno = 0;
+    Aluno lista_alunos[TAM_ALUNOS];
+        //escolhas das opÃ§Ãµes
+        int escolha_aluno;
+        int escolha_atualizarAL;
+        //invalidos
+        int invalido_sexoAL = 0;
+
+    //professores
+    int cadastro_professor = 0;
+    Professor lista_professor[TAM_PROFESSORES];
+        //escolhas das opÃ§Ãµes
+        int escolha_professor;
+        int escolha_atualizarPROF;
+        //invalidos
+        int invalido_sexoPROF = 0;
+
+    //escolhas das opÃ§Ãµes
+    int escolha;
+    int escolha_disciplina;
+
+    //saida do sistema
+    int sair_escola = 0;
+
+    //invalidos
+    int nascimento_invalido = 0;
+    int invalida_matricula = 0;
+    int matricula_errada = 0;
+
+    //excluir
+    char matricula_excluir[TAM_MATRICULA];
+
+    //temporÃ¡rios
+    int nascimento_temp[3];
+    char cpf_temp[TAM_CPF];
+    char matricula_temp[TAM_MATRICULA];
+
+    //atualizar 
+    char matricula_atualizar[TAM_MATRICULA];
+
+    //contadores
+    int contador1;
+
+    while(!sair_escola){
+
+        //saida de loop
+        int sair_aluno = 0;
+        int sair_professor = 0;
+        int sair_disciplina = 0;
+        int sair_sistema = 0;
+
+        printf("Escola\nEscolha uma das opÃ§Ãµes abaixo:\n0-Sair\n1-Aluno\n2-Professor\n3-Disciplina\n-->");
+        scanf("%d", &escolha);
+        switch(escolha){
+            case 0:
+                printf("Tem certeza que deseja fechar o programa?\n1-Sim\n0-NÃ£o");
+                scanf("%d", &sair_sistema);
+                    if(sair_sistema == 1)
+                        sair_escola = -1;
+                break;
+            case 1:
+                while(!sair_aluno){
+
+                    //invalidez
+                    invalido_sexoAL = 0;
+                    
+                    printf("Escolha uma aÃ§Ã£o para ALUNO\n0-Sair\n1-Cadastrar Aluno\n2-Listar Alunos\n3-Atualizar Aluno\n4-Excluir Aluno\n-->");
+                    scanf(" %d", &escolha_aluno);
+                    getchar();
+                    switch(escolha_aluno){
+                        case 0:
+                            sair_aluno = -1;
+                            break;
+                        case 1:
+                            if(cadastro_aluno >= TAM_ALUNOS){
+                                printf("Lista de alunos cheia\n");
+                            }
+                            else{
+                                printf("Cadastro de Aluno\nDigite o cpf do aluno sem pontos e sem espaÃ§os:\n");
+                                fgets(cpf_temp, TAM_CPF, stdin);
+                                cpf_temp[strcspn(cpf_temp, "\n")] = '\0';
+                                if(cpf_existeAL(lista_alunos, cadastro_aluno, cpf_temp)){
+                                    printf("CPF jÃ¡ cadastrado!\n");
+                                    break;
+                                }
+                                else{
+                                    printf("Digite a matrÃ­cula do aluno:\n");
+                                    fgets(matricula_temp, TAM_MATRICULA, stdin);
+                                    matricula_temp[strcspn(matricula_temp, "\n")] = '\0';
+                                    if(matricula_existeAL(lista_alunos, cadastro_aluno, matricula_temp)){
+                                        printf("MatrÃ­cula jÃ¡ cadastrada!\n");
+                                        break;
+                                    }
+                                    else{
+                                        printf("Digite o nome do aluno:\n");
+                                        fgets(lista_alunos[cadastro_aluno].nome_AL, 50, stdin);
+                                        
+                                        while(!nascimento_invalido){
+                                            printf("Digite a Data de Nascimento do Aluno\n-->");
+                                            scanf(" %i/%i/%i", &nascimento_temp[0], &nascimento_temp[2], &nascimento_temp[3]);
+                                            getchar();
+                                            if(nascimento_temp[0] > 31 || nascimento_temp[0] < 1 || nascimento_temp[2] > 12 || nascimento_temp[2] < 1 || nascimento_temp[3] > 2008 || nascimento_temp[3] < 1900){
+                                                printf("Digite uma data de nascimento vÃ¡lida!\n");
+                                            }
+                                            else
+                                                lista_alunos[cadastro_aluno].nascimento_AL[0] = nascimento_temp[0];
+                                                lista_alunos[cadastro_aluno].nascimento_AL[1] = nascimento_temp[1];
+                                                lista_alunos[cadastro_aluno].nascimento_AL[2] = nascimento_temp[2];
+                                                nascimento_invalido = 1;
+                                        }
+                                        printf("Digite o sexo do aluno:\n");
+                                        while(!invalido_sexoAL){
+                                            scanf(" %c", &lista_alunos[cadastro_aluno].sexo_AL);
+                                            getchar();
+                                            if(lista_alunos[cadastro_aluno].sexo_AL == 'M' || lista_alunos[cadastro_aluno].sexo_AL == 'F' || lista_alunos[cadastro_aluno].sexo_AL == 'm' || lista_alunos[cadastro_aluno].sexo_AL == 'f')
+                                                invalido_sexoAL = 1;
+                                            else 
+                                                printf("Por favor digite um sexo valido com 'M' ou 'F'\n");
+                                        }
+                                        strcpy(lista_alunos[cadastro_aluno].matricula_AL, matricula_temp);                                   
+                                        strcpy(lista_alunos[cadastro_aluno].cpf_AL, cpf_temp);
+                                        lista_alunos[cadastro_aluno].ativo_AL = 1;
+                                        cadastro_aluno++;
+                                    }
+                                }
+                            }
+                            break;
+                        case 2: 
+                            printf("Lista dos Alunos:\n");
+                            for(int contador = 0; contador < cadastro_aluno && lista_alunos[contador].ativo_AL == 1; contador++){
+                                if(lista_alunos[contador].sexo_AL == 'M' || lista_alunos[contador].sexo_AL == 'm')
+                                    printf("Nome: %sCPF: %s\nData de Nascimento: %i/%i/%i\nMatrÃ­cula: %s\nSexo: Feminino\n--------------\n", lista_alunos[contador].nome_AL, lista_alunos[contador].cpf_AL, lista_alunos[cadastro_aluno].nascimento_AL[0], lista_alunos[cadastro_aluno].nascimento_AL[1], lista_alunos[cadastro_aluno].nascimento_AL[2], lista_alunos[contador].matricula_AL);
+                                else
+                                    printf("Nome: %sCPF: %s\nData de Nascimento: %i/%i/%i\nMatrÃ­cula: %s\nSexo: Feminino\n--------------\n", lista_alunos[contador].nome_AL, lista_alunos[contador].cpf_AL, lista_alunos[cadastro_aluno].nascimento_AL[0], lista_alunos[cadastro_aluno].nascimento_AL[1], lista_alunos[cadastro_aluno].nascimento_AL[2], lista_alunos[contador].matricula_AL);
+                            } 
+                            break;
+                        case 3:                             
+                            printf("Atualizar ALuno\nDigite a matrÃ­cula:\n-->");
+                            fgets(matricula_atualizar, TAM_MATRICULA, stdin);
+                            matricula_atualizar[strcspn(matricula_atualizar, "\n")] = '\0';
+                            for(contador1 = 0; contador1 < cadastro_aluno; contador1++){
+                                if(strcmp(matricula_atualizar, lista_alunos[contador1].matricula_AL) == 0){
+                                    break;
+                                }
+                            }
+                            if(contador1 == cadastro_aluno){
+                                printf("MatrÃ­cula invÃ¡lida\n");
+                                break;
+                            }
+                            printf("Escolha o que atualizar\n1-Nome\n2-MatrÃ­cula\n3-CPF\n4-Sexo\n5-Data de Nascimento\n-->");
+                            scanf("%d", &escolha_atualizarAL);
+                            getchar();
+
+                            switch(escolha_atualizarAL){
+                                case 1:
+                                    printf("Digite o novo nome\n-->");
+                                    fgets(lista_alunos[contador1].nome_AL, 50, stdin);
+                                    break;
+
+                                case 2:
+                                    printf("Digite a nova matrÃ­cula\n-->");
+                                    fgets(matricula_temp, TAM_MATRICULA, stdin);
+                                    matricula_temp[strcspn(matricula_temp, "\n")] = '\0';
+                                    if(matricula_existeAL(lista_alunos, cadastro_aluno, matricula_temp))
+                                        printf("MatrÃ­cula jÃ¡ cadastrada!\n");
+                                    else
+                                        strcpy(lista_alunos[contador1].matricula_AL, matricula_temp);
+                                    break;
+
+                                case 3:
+                                    printf("Digite o novo cpf\n-->");
+                                    fgets(cpf_temp, TAM_CPF, stdin);
+                                    cpf_temp[strcspn(cpf_temp, "\n")] = '\0';
+                                    if(cpf_existeAL(lista_alunos, cadastro_aluno, cpf_temp))
+                                        printf("CPF jÃ¡ cadastrado!\n");
+                                    else
+                                        strcpy(lista_alunos[contador1].cpf_AL, cpf_temp);
+                                    break;
+
+                                case 4:
+                                    printf("Digite o novo sexo\n-->");
+                                    while(!invalido_sexoAL){
+                                        scanf(" %c", &lista_alunos[contador1].sexo_AL);
+                                        if(lista_alunos[contador1].sexo_AL == 'M' || lista_alunos[contador1].sexo_AL == 'F' || lista_alunos[contador1].sexo_AL == 'm' || lista_alunos[contador1].sexo_AL == 'f')
+                                            invalido_sexoAL = 1;
+                                        else
+                                            printf("Digite M ou F\n");
+                                    }
+                                    break;
+                                case 5:
+                                    printf("Digite a nova data de nascimento\n-->");
+                                    while(!nascimento_invalido){
+                                        printf("Digite a Data de Nascimento do Aluno\n-->");
+                                        scanf(" %i/%i/%i", &nascimento_temp[0], &nascimento_temp[2], &nascimento_temp[3]);
+                                        getchar();
+                                        if(nascimento_temp[0] > 31 || nascimento_temp[0] < 1 || nascimento_temp[2] > 12 || nascimento_temp[2] < 1 || nascimento_temp[3] > 2008 || nascimento_temp[3] < 1900){
+                                            printf("Digite uma data de nascimento vÃ¡lida!\n");
+                                        }
+                                        else
+                                            lista_alunos[cadastro_aluno].nascimento_AL[0] = nascimento_temp[0];
+                                            lista_alunos[cadastro_aluno].nascimento_AL[1] = nascimento_temp[1];
+                                            lista_alunos[cadastro_aluno].nascimento_AL[2] = nascimento_temp[2];
+                                            nascimento_invalido = 1;
+                                    }
+                            }
+                            break;
+                        case 4:
+                            printf("Excluir Aluno:\n Digite a MatrÃ­cula:\n-->");
+                            fgets(matricula_excluir, TAM_MATRICULA, stdin);
+                            matricula_excluir[strcspn(matricula_excluir, "\n")] = '\0';
+                            for(contador1 = 0; contador1 < cadastro_aluno; contador1++){
+                                if(strcmp(matricula_excluir, lista_alunos[contador1].matricula_AL) == 0){
+                                    lista_alunos[contador1].ativo_AL = -1;
+                                    for(int contador2 = contador1; contador2 < cadastro_aluno - 1; contador2++){
+                                        strcpy(lista_alunos[contador2].matricula_AL, lista_alunos[contador2 + 1].matricula_AL);
+                                        strcpy(lista_alunos[contador2].cpf_AL, lista_alunos[contador2 + 1].cpf_AL);
+                                        strcpy(lista_alunos[contador2].nome_AL, lista_alunos[contador2 + 1].nome_AL);
+                                        lista_alunos[contador2].sexo_AL = lista_alunos[contador2 + 1].sexo_AL;
+                                        lista_alunos[contador2].ativo_AL = lista_alunos[contador2 + 1].ativo_AL;
+                                    }
+                                    cadastro_aluno--;
+                                    printf("Aluno Excluido");
+                                    break;
+                                }
+                            }
+                            if(contador1 >= cadastro_aluno){
+                                printf("MatrÃ­cula invÃ¡lida\n");
+                                break;
+                            }
+
+                            break;
+                        default:
+                            printf("Escolha InvÃ¡lida");
+                    }
+                }
+            case 2:
+                while(!sair_professor){
+
+                    //invalidez
+                    invalido_sexoPROF = 0;
+                    
+                    printf("Escolha uma aÃ§Ã£o para PROFESSOR\n0-Sair\n1-Cadastrar Professor\n2-Listar Professor\n3-Atualizar Professor\n4-Excluir Professor\n-->");
+                    scanf(" %d", &escolha_professor);
+                    getchar();
+                    switch(escolha_professor){
+                        case 0:
+                            sair_professor = -1;
+                            break;
+                        case 1:
+                            if(cadastro_professor >= TAM_PROFESSORES){
+                                printf("Lista de professores cheia\n");
+                            }
+                            else{
+                                printf("Cadastro de Professor\nDigite o cpf do professor sem pontos e sem espaÃ§os:\n");
+                                fgets(cpf_temp, TAM_CPF, stdin);
+                                cpf_temp[strcspn(cpf_temp, "\n")] = '\0';
+                                if(cpf_existePROF(lista_professor, cadastro_professor, cpf_temp)){
+                                    printf("CPF jÃ¡ cadastrado!\n");
+                                    break;
+                                }
+                                else{
+                                    printf("Digite a matrÃ­cula do professor:\n");
+                                    fgets(matricula_temp, TAM_MATRICULA, stdin);
+                                    matricula_temp[strcspn(matricula_temp, "\n")] = '\0';
+                                    if(matricula_existePROF(lista_professor, cadastro_professor, matricula_temp)){
+                                        printf("MatrÃ­cula jÃ¡ cadastrada!\n");
+                                        break;
+                                    }
+                                    else{
+                                        printf("Digite o nome do professor:\n");
+                                        fgets(lista_professor[cadastro_professor].nome_PROF, 50, stdin);
+
+                                        while(!nascimento_invalido){
+                                            printf("Digite a Data de Nascimento do Professor\n-->");
+                                            printf("Dia\n-->");
+                                            scanf(" %i", &nascimento_temp[0]);
+                                            printf("MÃªs\n-->");
+                                            scanf(" %i", &nascimento_temp[2]);
+                                            printf("Ano\n-->");
+                                            scanf(" %i", &nascimento_temp[3]);
+                                            getchar();
+                                            if(nascimento_temp[0] > 31 || nascimento_temp[0] < 1 || nascimento_temp[2] > 12 || nascimento_temp[2] < 1 || nascimento_temp[3] > 2008 || nascimento_temp[3] < 1900){
+                                                printf("Digite uma data de nascimento vÃ¡lida!\n");
+                                            }
+                                            else
+                                                lista_professor[cadastro_professor].nascimento_PROF[0] = nascimento_temp[0];
+                                                lista_professor[cadastro_professor].nascimento_PROF[1] = nascimento_temp[1];
+                                                lista_professor[cadastro_professor].nascimento_PROF[2] = nascimento_temp[2];
+                                                nascimento_invalido = 1;
+                                        }
+                           
+                                        printf("Digite o sexo do professor:\n");
+                                        while(!invalido_sexoPROF){
+                                            scanf(" %c", &lista_professor[cadastro_professor].sexo_PROF);
+                                            getchar();
+                                            if(lista_professor[cadastro_professor].sexo_PROF == 'M' || lista_professor[cadastro_professor].sexo_PROF == 'F' || lista_professor[cadastro_professor].sexo_PROF == 'm' || lista_professor[cadastro_professor].sexo_PROF == 'f')
+                                                invalido_sexoPROF = 1;
+                                            else 
+                                                printf("Por favor digite um sexo valido com 'M' ou 'F'\n");
+                                        }
+                                        strcpy(lista_professor[cadastro_professor].matricula_PROF, matricula_temp);                                   
+                                        strcpy(lista_professor[cadastro_professor].cpf_PROF, cpf_temp);
+                                        lista_professor[cadastro_professor].ativo_PROF = 1;
+                                        cadastro_professor++;
+                                    }
+                                }
+                            }
+                            break;
+                        case 2: 
+                            printf("Lista dos Professores:\n");
+                            for(int contador = 0; contador < cadastro_professor && lista_professor[contador].ativo_PROF == 1; contador++){
+                                if(lista_professor[contador].sexo_PROF == 'M' || lista_professor[contador].sexo_PROF == 'm')
+                                    printf("Nome: %sCPF: %s\nData de Nascimento: %i/%i/%i\nMatrÃ­cula: %s\nSexo: Masculino\n--------------\n", lista_professor[contador].nome_PROF, lista_professor[contador].cpf_PROF, lista_professor[cadastro_professor].nascimento_PROF[0], lista_professor[cadastro_professor].nascimento_PROF[1], lista_professor[cadastro_professor].nascimento_PROF[2], lista_professor[contador].matricula_PROF);                          
+                                else
+                                    printf("Nome: %sCPF: %s\nData de Nascimento: %i/%i/%i\nMatrÃ­cula: %s\nSexo: Masculino\n--------------\n", lista_professor[contador].nome_PROF, lista_professor[contador].cpf_PROF, lista_professor[cadastro_professor].nascimento_PROF[0], lista_professor[cadastro_professor].nascimento_PROF[1], lista_professor[cadastro_professor].nascimento_PROF[2], lista_professor[contador].matricula_PROF);                          
+                            } 
+                            break;
+                        case 3:                             
+                            printf("Atualizar Professor\nDigite a matrÃ­cula:\n-->");
+                            fgets(matricula_atualizar, TAM_MATRICULA, stdin);
+                            matricula_atualizar[strcspn(matricula_atualizar, "\n")] = '\0';
+                            for(contador1 = 0; contador1 < cadastro_professor; contador1++){
+                                if(strcmp(matricula_atualizar, lista_professor[contador1].matricula_PROF) == 0){
+                                    break;
+                                }
+                            }
+                            if(contador1 == cadastro_professor){
+                                printf("MatrÃ­cula invÃ¡lida\n");
+                                break;
+                            }
+                            printf("Escolha o que atualizar\n1-Nome\n2-MatrÃ­cula\n3-CPF\n4-Sexo\n5-Data de Nascimento\n-->");
+                            scanf("%d", &escolha_atualizarPROF);
+                            getchar();
+
+                            switch(escolha_atualizarPROF){
+                                case 1:
+                                    printf("Digite o novo nome\n-->");
+                                    fgets(lista_professor[contador1].nome_PROF, 50, stdin);
+                                    break;
+
+                                case 2:
+                                    printf("Digite a nova matrÃ­cula\n-->");
+                                    fgets(matricula_temp, TAM_MATRICULA, stdin);
+                                    matricula_temp[strcspn(matricula_temp, "\n")] = '\0';
+                                    if(matricula_existePROF(lista_professor, cadastro_professor, matricula_temp))
+                                        printf("MatrÃ­cula jÃ¡ cadastrada!\n");
+                                    else
+                                        strcpy(lista_professor[contador1].matricula_PROF, matricula_temp);
+                                    break;
+
+                                case 3:
+                                    printf("Digite o novo cpf\n-->");
+                                    fgets(cpf_temp, TAM_CPF, stdin);
+                                    cpf_temp[strcspn(cpf_temp, "\n")] = '\0';
+                                    if(cpf_existePROF(lista_professor, cadastro_professor, cpf_temp))
+                                        printf("CPF jÃ¡ cadastrado!\n");
+                                    else
+                                        strcpy(lista_professor[contador1].cpf_PROF, cpf_temp);
+                                    break;
+
+                                case 4:
+                                    printf("Digite o novo sexo\n-->");
+                                    while(!invalido_sexoPROF){
+                                        scanf(" %c", &lista_professor[contador1].sexo_PROF);
+                                        if(lista_professor[cadastro_professor].sexo_PROF == 'M' || lista_professor[cadastro_professor].sexo_PROF == 'F' || lista_professor[cadastro_professor].sexo_PROF == 'm' || lista_professor[cadastro_professor].sexo_PROF == 'f')
+                                            invalido_sexoPROF = 1;
+                                        else
+                                            printf("Digite M ou F\n");
+                                    }
+                                    break;
+                                
+                                case 5:
+                                    printf("Digite a nova data de nascimento");
+                                    while(!nascimento_invalido){
+                                        printf("Digite a Data de Nascimento do Professor\n-->");
+                                        printf("Dia\n-->");
+                                        scanf(" %i", &nascimento_temp[0]);
+                                        printf("MÃªs\n-->");
+                                        scanf(" %i", &nascimento_temp[2]);
+                                        printf("Ano\n-->");
+                                        scanf(" %i", &nascimento_temp[3]);
+                                        getchar();
+                                        if(nascimento_temp[0] > 31 || nascimento_temp[0] < 1 || nascimento_temp[2] > 12 || nascimento_temp[2] < 1 || nascimento_temp[3] > 2008 || nascimento_temp[3] < 1900){
+                                            nascimento_invalido = 1;
+                                            printf("Digite uma data de nascimento vÃ¡lida!\n");
+                                        }
+                                        else
+                                            lista_professor[cadastro_professor].nascimento_PROF[0] = nascimento_temp[0];
+                                            lista_professor[cadastro_professor].nascimento_PROF[1] = nascimento_temp[1];
+                                            lista_professor[cadastro_professor].nascimento_PROF[2] = nascimento_temp[2];
+                                    }
+                            }
+                            break;
+                        case 4:
+                            printf("Excluir Professor:\n Digite a MatrÃ­cula:\n-->");
+                            fgets(matricula_excluir, TAM_MATRICULA, stdin);
+                            matricula_excluir[strcspn(matricula_excluir, "\n")] = '\0';
+                            for(contador1 = 0; contador1 < cadastro_professor; contador1++){
+                                if(strcmp(matricula_excluir, lista_professor[contador1].matricula_PROF) == 0){
+                                    lista_professor[contador1].ativo_PROF = -1;
+                                    for(int contador2 = contador1; contador2 < cadastro_professor - 1; contador2++){
+                                        strcpy(lista_professor[contador2].matricula_PROF, lista_professor[contador2 + 1].matricula_PROF);
+                                        strcpy(lista_professor[contador2].cpf_PROF, lista_professor[contador2 + 1].cpf_PROF);
+                                        strcpy(lista_professor[contador2].nome_PROF, lista_professor[contador2 + 1].nome_PROF);
+                                        lista_professor[contador2].sexo_PROF = lista_professor[contador2 + 1].sexo_PROF;
+                                        lista_professor[contador2].ativo_PROF = lista_professor[contador2 + 1].ativo_PROF;
+                                    }
+                                    cadastro_professor--;
+                                    break;
+                                }
+                            }
+                            if(contador1 >= cadastro_professor){
+                                printf("MatrÃ­cula invÃ¡lida\n");
+                                break;
+                            }
+
+                            break;
+                        default:
+                            printf("Escolha InvÃ¡lida");
+                    }
+                }
+        }
+    }
+}
